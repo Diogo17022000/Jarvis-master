@@ -1,10 +1,8 @@
-
-
 import React, { useState, useLayoutEffect } from 'react'
 import Banner from '../components/Banner'
 import Menu from '../components/Menu'
 import ImageUpload from "../components/ImageUpload";
-import ImagemBanner from '../images/banner_home_background.jpg';
+import ImagemBanner from '../images/banner-gerar-escalas.jpg';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -14,9 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Firebase from '../services/FirebaseConnect'
 import {v4 as uuidv4} from 'uuid';
 import {makeStyles } from '@material-ui/core/styles';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import Paper from '@material-ui/core/Paper';
-import Imagem from '../images/background-cadastro-colaborador.jpg';
 import ImagemAvatar from '../images/imagem-colaborador.png';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -31,6 +27,10 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import EditIcon from '@material-ui/icons/Edit';
+
+
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -112,9 +112,6 @@ const useStyles = makeStyles((theme) => ({
         color: '#6D6D72',
         marginBottom: '2em'
       },
-      horarioAtendimento: {
-        color: '#007F00',
-    },
       large: {
         width: theme.spacing(7),
         height: theme.spacing(7),
@@ -122,9 +119,9 @@ const useStyles = makeStyles((theme) => ({
       contentPaperColaboradores: {
           marginBottom: '25px'
       }
-    }))
+  }));
   
-export default function Escalas() {
+export default function Colaboradores() {
 
     const [lista, setLista] = useState([])
     useLayoutEffect(() => {
@@ -152,20 +149,29 @@ export default function Escalas() {
         setOpen(false);
     };
 
-    const [nome, setHoras] = useState("")
-    const [email, setMinutos] = useState("")
+    const [nome, setNome] = useState("")
+    const [email, setEmail] = useState("")
+    const [telefone, setTelefone] = useState("")
+    const [jornada, setJornada] = useState()
+    const [intervalo, setIntervalo] = useState()
     const [statusColaborador, setStatusColaborador] = useState("")
     const limpar = () => {
-        setHoras("")
-        setMinutos("")
-
+        setNome("")
+        setEmail("")
+        setTelefone("")
+        setJornada()
+        setIntervalo()
+        setStatusColaborador("")
     }
 
-    const salvarRegistro = () => {
+    const salvarHorario = () => {
         let objeto = {
             nome: nome,
             email: email,
-
+            telefone: telefone,
+            jornada: jornada,
+            intervalo: intervalo,
+            statusColaborador: statusColaborador,
         }
         let code = uuidv4()
         Firebase
@@ -184,41 +190,30 @@ export default function Escalas() {
         <div>
             <Banner
                 image={ImagemBanner}
-                imageText="Imagem ilustrativa pessoa usando notebook" />
-            <Menu tabAtiva={3}/>
+            />
+            <Menu tabAtiva={2}/>
             <div style={{display: 'flex', flexWrap: 'nowrap', justifyContent: 'flex-end', alignItems: 'center'}}>
                 <div className="item-flex-banner">
                     <Button 
                         variant="contained" 
                         onClick={handleClickOpen} 
-                        endIcon={<PersonAddIcon/>} className={classes.button}>
-                    Cadastrar
+                        endIcon={<EditIcon/>} className={classes.button}>
+                    Editar
                     </Button>
                 </div>
             </div>
             <Dialog open={open} aria-labelledby="form-dialog-title">
-                <div style={{height: '200px', maxWidth: '100%', margin: 'auto', zIndex: '6', overflow: 'hidden'}}>
-                <img src={Imagem} style={{width: '100%'}}
-                    alt="Imagem ilustrativa de um relógio em funcionamento."/>
-                </div>
-                <DialogTitle id="form-dialog-title">Horário de Atendimento</DialogTitle>
-                <DialogContent>
-                <TextField
-                        autoFocus
-                        margin="dense"
-                        id="manha"
-                        value={nome}
-                        onChange={(e) => setHoras(e.target.value)}
-                        onChange={(e) => setMinutos(e.target.value)}
-                         fullWidth
 
-                    />
+                <DialogTitle id="form-dialog-title">Horário de Atendimento </DialogTitle>
+                
+                <DialogContent>
+                    
                     <form className={classes.formJornada} noValidate>
-                    {/* <TextField 
+                    <TextField 
                         id="jornada"
-                        label="Jornada"
+                        label="Horas"
                         type="time"
-                        defaultValue="00:00"
+                        defaultValue="00"
                         value={jornada}
                         onChange={(e) => setJornada(e.target.value)}
                         className={classes.textField}
@@ -228,10 +223,10 @@ export default function Escalas() {
                         inputProps={{
                         step: 300
                         }}
-                    /> */}
-                    {/* <TextField 
+                    />
+                    <TextField 
                         id="time"
-                        label="Intervalo"
+                        label="Minutos"
                         type="time"
                         defaultValue="00:00"
                         value={intervalo}
@@ -243,55 +238,58 @@ export default function Escalas() {
                         inputProps={{
                         step: 300
                         }}
-                    /> */}
+                    />
+
+                    Manhã
+                    <TextField 
+                        id="jornada"
+                        label="Horas"
+                        type="time"
+                        defaultValue="00:00"
+                        value={jornada}
+                        onChange={(e) => setJornada(e.target.value)}
+                        className={classes.textField}
+                        InputLabelProps={{
+                        shrink: true
+                        }}
+                        inputProps={{
+                        step: 300
+                        }}
+                    />
+                    <TextField 
+                        id="time"
+                        label="Minutos"
+                        type="time"
+                        defaultValue="00:00"
+                        value={intervalo}
+                        onChange={(e) => setIntervalo(e.target.value)}
+                        className={classes.textField}
+                        InputLabelProps={{
+                        shrink: true
+                        }}
+                        inputProps={{
+                        step: 300
+                        }}
+                    />
+
+                    
                     </form>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel className={classes.inputLabel} shrink>
-                            Status
-                        </InputLabel>
-                        <Select
-                            value={statusColaborador}
-                            onChange={(e) => setStatusColaborador(e.target.value)}
-                            id="demo-simple-select-placeholder-label"
-                            displayEmpty
-                            className={classes.selectEmpty}
-                        >
-                            <MenuItem select value="">
-                                <em>Selecione</em>
-                            </MenuItem>
-                            <MenuItem value="Ativo">Ativo</MenuItem>
-                            <MenuItem value="Inativo">Inativo</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <InputLabel className={classes.inputLabel} shrink>
-                        Foto do colaborador
-                    </InputLabel>
-                    <ImageUpload alt="Upload de Imagens" cardName="Input Image"/>
+
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
                     <Button 
-                        onClick={handleClose} 
-                        variant="contained" 
-                        startIcon={<CloseIcon style={{fontSize: '25px'}}/>} 
-                        className={classes.buttonCancelar}>
-                        Cancelar
-                    </Button>
-                    <Button 
-                        onClick={salvarRegistro} 
+                        onClick={salvarHorario} 
                         variant="contained" 
                         startIcon={<SaveIcon style={{fontSize: '25px'}}/>} 
                         className={classes.button}>
-                        Cadastrar
+                        Incluir Horário
                     </Button>
                 </DialogActions>
             </Dialog>
             
             <div className={classes.contentColaboradores} >
                 <Typography className={classes.tituloColaboradores} variant="h5" component="h3">
-                    Painel da Jornada de Trabalho
-                </Typography>
-                <Typography className={classes.horarioAtendimento} variant="h5" component="h3">
-                    Horário de atendimento
+                    Painel da Jornada de Trabalho 
                 </Typography>
 
                 { lista.map((item, key) => {
@@ -327,3 +325,4 @@ export default function Escalas() {
     )
 }
 
+        
